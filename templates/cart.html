@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="/static/styles/index_style.css">
+    <link rel="stylesheet" href="/static/styles/cart_style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/materials" class="logo-link">
+                <img src="/static/img/main_image.png" alt="Главная страница" class="logo">
+            </a>
+        </div> 
+    </header>
+
+    <main class="main-content">
+
+        <section class="cart-section">
+            <h1 class="cart-title">Параметры котлована</h1>
+            
+            <div class="pit-parameters">
+                <div class="parameter-input">
+                    <label for="length">Длина (м)</label>
+                    <input type="number" id="length" placeholder="0.0" step="0.1" min="0">
+                </div>
+                <div class="parameter-input">
+                    <label for="width">Ширина (м)</label>
+                    <input type="number" id="width" placeholder="0.0" step="0.1" min="0">
+                </div>
+                <div class="parameter-input">
+                    <label for="depth">Глубина (м)</label>
+                    <input type="number" id="depth" placeholder="0.0" step="0.1" min="0">
+                </div>
+            </div>
+
+            <div class="cart-items">
+                
+                {{if .cartItems}}
+                <div class="materials-list">
+                    {{range .cartItems}}
+                    <div class="cart-material-card">
+                        <div class="cart-material-image">
+                            <img src="{{.ImageURL}}" alt="{{.Title}}">
+                        </div>
+                        <div class="cart-material-content">
+                            <div class="cart-material-info">
+                                <div class="cart-material-header">
+                                    <h3 class="cart-material-title">{{.Title}}</h3>
+                                    <span class="cart-material-coefficient">Коэффициент разрыхления: {{.Coefficient}}</span>
+                                    <span class="cart-material-volume">Объем грунта после выемки: {{$.volume}} м³</span>
+                                </div>
+                                <a href="/material/{{.ID}}" class="material-details-link">подробнее</a>
+                            </div>
+                            <div class="cart-material-actions">
+                                <div class="slope-parameters">
+                                    <label class="slope-label">Угол откоса</label>
+                                    <input type="number" class="slope-input" placeholder="0" step="1" min="0" max="179">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="cart-item-remove">
+                            <img src="/static/img/urn_icon.png" alt="Удалить из корзины">
+                        </button>
+                    </div>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="empty-cart">
+                    <p>Корзина пуста</p>
+                </div>
+                {{end}}
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

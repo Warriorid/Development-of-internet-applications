@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор земельных работ</title>
+    <link rel="stylesheet" href="/static/styles/index_style.css">
+    <link rel="stylesheet" href="/static/styles/material_card.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/materials" class="logo-link">
+                <img src="/static/img/main_image.png" alt="Главная страница" class="logo">
+            </a>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="cart-button-container">
+            <a href="/material/cart/{{ .cartId}}" class="cart-button-link">
+                <button class="cart-button">
+                    <img src="/static/img/basket_icon.png" alt="Корзина" class="cart-icon">
+                    <span class="cart-count">{{ .cartCount }}</span>
+                </button>
+            </a>
+            
+        </div>
+
+        <section class="search-section">
+            <form action="{{if .materials}}/materials{{else}}/hello{{end}}" method="GET" class="search-form">
+                <input type="text" name="query" placeholder="Поиск грунта" value="{{ .query }}" class="search-input">
+                <button type="submit" class="search-button">🔍</button>
+            </form>
+        </section>
+        
+
+        <section class="materials-section">
+            <div class="materials-container">
+                {{ range .materials }}
+                <div class="material-card">
+                    <div class="material-image">
+                        <img src="{{ .ImageURL }}" alt="{{ .Title }}">
+                    </div>
+                    <div class="material-content">
+                        <h3 class="material-title">{{ .Title }}</h3>
+                        <p class="material-coefficient">Коэффициент разрыхления: <span>{{ .Coefficient }}</span></p>
+                        <a href="/material/{{ .ID }}" class="material-details">подробнее</a>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

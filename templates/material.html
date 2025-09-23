@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подробная информация</title>
+    <link rel="stylesheet" href="/static/styles/index_style.css">
+    <link rel="stylesheet" href="/static/styles/material_info.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/materials" class="logo-link">
+                <img src="/static/img/main_image.png" alt="Главная страница" class="logo">
+            </a>
+        </div> 
+    </header>
+
+
+    <main class="main-content">
+        <div class="material-button-container">
+            <a href="/materials" class="material-back">Материалы</a>
+        </div>
+
+        <section class="material-detail-section">
+            <div class="material-detail-container">
+
+                <div class="material-detail-content">
+                    <h1 class="material-detail-title">{{.material.Title}}</h1>
+                    <div class="material-detail-coefficient">
+                        Коэффициент разрыхления: <span>{{.material.Coefficient}}</span>
+                    </div>
+                    <p class="material-detail-description">
+                        {{.material.Description}}
+                    </p>
+                </div>
+                <div class="material-detail-image">
+                    <img src="{{.material.ImageURL}}" alt="{{.material.Title}}">
+                </div>
+            </div>
+        </section>
+    </main>
+    
+</body>
+</html>
