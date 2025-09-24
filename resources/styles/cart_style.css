@@ -127,9 +127,9 @@
     font: 500 14px 'Roboto', sans-serif;
     transition: background-color 0.3s;
     text-align: center;
-    width: 120px; /* Фиксированная ширина кнопки */
-    box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
-    flex-shrink: 0; /* Запрет уменьшения размера */
+    width: 120px; 
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .material-details-link:hover {
