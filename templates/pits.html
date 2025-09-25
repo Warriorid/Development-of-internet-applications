@@ -43,25 +43,24 @@
                         <div class="pit-material-image">
                             <img src="{{.ImageURL}}" alt="{{.Title}}">
                         </div>
+                        
                         <div class="pit-material-content">
-                            <div class="pit-material-info">
-                                <div class="pit-material-header">
-                                    <h3 class="pit-material-title">{{.Title}}</h3>
-                                    <span class="pit-material-coefficient">Коэффициент разрыхления: {{.Coefficient}}</span>
-                                    <span class="pit-material-volume">Объем грунта после выемки: {{$.volume}} м³</span>
-                                </div>
-                                <a href="/material/{{.ID}}" class="material-details-link">подробнее</a>
+                            <div class="card-header">
+                                <span class="coefficient-header">Коэффициент разрыхления: {{.Coefficient}}</span>
                             </div>
-                            <div class="pit-material-actions">
-                                <div class="slope-parameters">
-                                    <label class="slope-label">Угол откоса</label>
-                                    <input type="number" class="slope-input" placeholder="0" step="1" min="0" max="179">
+            
+                            <div class="card-body">
+                                <span class="material-name">{{.Title}}</span>
+                                <a href="/material/{{.ID}}" class="material-details-link">подробнее</a>
+                                <div class="slope-input-group">
+                                    <input type="number" class="slope-input" placeholder="Угол откоса" step="1" min="0" max="179">
                                 </div>
+                                <span class="volume-result">Объем грунта после выемки: {{$.volume}} м³</span>
+                                <button class="pit-item-remove">
+                                    <img src="/static/img/urn_icon.png" alt="Удалить">
+                                </button>
                             </div>
                         </div>
-                        <button class="pit-item-remove">
-                            <img src="/static/img/urn_icon.png" alt="Удалить из котлована">
-                        </button>
                     </div>
                     {{end}}
                 </div>
