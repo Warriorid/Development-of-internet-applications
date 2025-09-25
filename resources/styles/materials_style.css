@@ -31,7 +31,7 @@ header {
     position: relative;
 }
 
-.cart-button-container {
+.pit-button-container {
     position: absolute;
     top: 0;
     right: 20px;
@@ -40,7 +40,7 @@ header {
     gap: 10px;
 }
 
-.cart-button {
+.pit-button {
     width: 62px;
     height: 62px;
     background-color: #FFCD11;
@@ -55,23 +55,23 @@ header {
     transition: all 0.2s;
 }
 
-.cart-button:hover {
+.pit-button:hover {
     background-color: #E6B910;
 }
 
-.cart-icon {
+.pit-icon {
     width: 24px;
     height: 24px;
 }
 
-.cart-count {
+.pit-count {
     color: #000;
     font-size: 14px;
     font-weight: bold;
     margin-left: 5px;
     text-decoration: none;
 }
-.cart-button-link {
+.pit-button-link {
     text-decoration: none;
 }
 

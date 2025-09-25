@@ -20,9 +20,9 @@ type Material struct {
 	Description string
 }
 
-type Cart struct {
+type Pits struct {
 	ID int
-	CartItems []Material
+	PitsItems []Material
 }
 
 
@@ -98,11 +98,11 @@ func (r *Repository) GetMaterialsByTitle(title string) ([]Material, error) {
     return result, nil
 }
 
-func (r *Repository)GetCarts()([]Cart, error){
-	carts := []Cart {
+func (r *Repository)GetPits()([]Pits, error){
+	pits := []Pits {
 		{
 			ID: 1,
-			CartItems: []Material{
+			PitsItems: []Material{
 				{
 					ID: 1,
 					Title: "Песок",
@@ -120,24 +120,24 @@ func (r *Repository)GetCarts()([]Cart, error){
 			},
 		},
 	}
-	if len(carts) == 0 {
-		return []Cart{}, fmt.Errorf("Не найдено ни одной корзины")
+	if len(pits) == 0 {
+		return []Pits{}, fmt.Errorf("Не найдено ни одного котлована")
 	}
-	return carts, nil
+	return pits, nil
 }
 
-func (r *Repository) GetCart(id int)(Cart, int, error){
+func (r *Repository) GetPit(id int)(Pits, int, error){
 	
-	carts, err := r.GetCarts()
+	pits, err := r.GetPits()
 	if err != nil {
-		return Cart{}, 0, err
+		return Pits{}, 0, err
 	}
-	for _, cart := range carts {
-		if cart.ID == id {
-			cartSize := len(cart.CartItems)
-			return cart, cartSize, nil
+	for _, pit := range pits {
+		if pit.ID == id {
+			pitsCount := len(pit.PitsItems)
+			return pit, pitsCount, nil
 		}
 	}
 	
-    return Cart{}, 0, fmt.Errorf("корзина пуста")
+    return Pits{}, 0, fmt.Errorf("Не добавлено ни одного котлована")
 }

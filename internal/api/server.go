@@ -30,7 +30,7 @@ func StartServer(){
 	
 	r.GET("/materials", handler.GetMaterials)
 	r.GET("/material/:id", handler.GetMaterial)
-	r.GET("/material/cart/:id", handler.GetCart)
+	r.GET("/material/pits/:id", handler.GetPit)
 
 	r.Run()
 	log.Println("server down")

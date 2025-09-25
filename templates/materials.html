@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор земельных работ</title>
-    <link rel="stylesheet" href="/static/styles/index_style.css">
+    <link rel="stylesheet" href="/static/styles/materials_style.css">
     <link rel="stylesheet" href="/static/styles/material_card.css">
 </head>
 <body>
@@ -18,18 +18,18 @@
     
     <main class="main-content">
         <div class="cart-button-container">
-            <a href="/material/cart/{{ .cartId}}" class="cart-button-link">
+            <a href="/material/pits/{{ .pitId}}" class="cart-button-link">
                 <button class="cart-button">
                     <img src="/static/img/basket_icon.png" alt="Корзина" class="cart-icon">
-                    <span class="cart-count">{{ .cartCount }}</span>
+                    <span class="pit-count">{{ .pitCount }}</span>
                 </button>
             </a>
             
         </div>
 
         <section class="search-section">
-            <form action="{{if .materials}}/materials{{else}}/hello{{end}}" method="GET" class="search-form">
-                <input type="text" name="query" placeholder="Поиск грунта" value="{{ .query }}" class="search-input">
+            <form action="{{if .materials}}/materials{{else}}/materials{{end}}" method="GET" class="search-form">
+                <input type="text" name="materialTitle" placeholder="Поиск грунта" value="{{ .matetialTitle }}" class="search-input">
                 <button type="submit" class="search-button">🔍</button>
             </form>
         </section>

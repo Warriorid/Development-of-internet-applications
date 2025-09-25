@@ -24,35 +24,35 @@ func (h *Handler) GetMaterials(ctx *gin.Context) {
     var materials []repository.Material
     var err error
 
-    searchQuery := ctx.Query("query")
-    if searchQuery == "" {          
+    searchMaterialTitle := ctx.Query("materialTitle")
+    if searchMaterialTitle == "" {          
         materials, err = h.Repository.GetMaterials()
         if err != nil {
             logrus.Error(err)
             materials = []repository.Material{}
         }
     } else {
-        materials, err = h.Repository.GetMaterialsByTitle(searchQuery)
+        materials, err = h.Repository.GetMaterialsByTitle(searchMaterialTitle)
         if err != nil {
             logrus.Error(err)
             materials = []repository.Material{}
         }
     }
 
-	exampleIdForCart := 1
-	cart, cartSize, err := h.Repository.GetCart(exampleIdForCart)
+	exampleIdForPit := 1
+	pit, pitCount, err := h.Repository.GetPit(exampleIdForPit)
 	if err != nil {
 		logrus.Error(err)
 	}
-	cartId := cart.ID
+	pitId := pit.ID
 
 
-    ctx.HTML(http.StatusOK, "index.html", gin.H{
+    ctx.HTML(http.StatusOK, "materials.html", gin.H{
         "time":      time.Now().Format("15:04:05"),
         "materials": materials,
-        "query":     searchQuery,
-        "cartCount": cartSize,
-		"cartId": cartId,
+        "materialTitle":     searchMaterialTitle,
+        "pitCount": pitCount,
+		"pitId": pitId,
     })
 }
 
@@ -65,23 +65,23 @@ func (h *Handler) GetMaterial(c *gin.Context) {
 	if err != nil {
 		logrus.Error(err)
 	}
-	c.HTML(http.StatusOK, "material.html", gin.H{
+	c.HTML(http.StatusOK, "material_info.html", gin.H{
 		"material": material,
 	})
 }
 
-func (h *Handler) GetCart(c *gin.Context) {
+func (h *Handler) GetPit(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		logrus.Error(err)
 	}
-	cart, _, err := h.Repository.GetCart(id)
+	pit, _, err := h.Repository.GetPit(id)
 	if err != nil {
 		logrus.Error(err)
 	}
 
-	c.HTML(http.StatusOK, "cart.html", gin.H{
-		"cartItems": cart.CartItems,
+	c.HTML(http.StatusOK, "pits.html", gin.H{
+		"pits": pit.PitsItems,
 		"volume": 0.0,
 	})
 }

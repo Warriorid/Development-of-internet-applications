@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корзина</title>
-    <link rel="stylesheet" href="/static/styles/index_style.css">
-    <link rel="stylesheet" href="/static/styles/cart_style.css">
+    <title>Котлованы</title>
+    <link rel="stylesheet" href="/static/styles/materials_style.css">
+    <link rel="stylesheet" href="/static/styles/pits_style.css">
 </head>
 <body>
     <header>
@@ -17,9 +17,8 @@
     </header>
 
     <main class="main-content">
-
-        <section class="cart-section">
-            <h1 class="cart-title">Параметры котлована</h1>
+        <section class="pits-section">
+            <h1 class="pits-title">Параметры котлована</h1>
             
             <div class="pit-parameters">
                 <div class="parameter-input">
@@ -36,46 +35,43 @@
                 </div>
             </div>
 
-            <div class="cart-items">
-                
-                {{if .cartItems}}
+            <div class="pit-items">
+                {{if .pits}}
                 <div class="materials-list">
-                    {{range .cartItems}}
-                    <div class="cart-material-card">
-                        <div class="cart-material-image">
+                    {{range .pits}}
+                    <div class="pit-material-card">
+                        <div class="pit-material-image">
                             <img src="{{.ImageURL}}" alt="{{.Title}}">
                         </div>
-                        <div class="cart-material-content">
-                            <div class="cart-material-info">
-                                <div class="cart-material-header">
-                                    <h3 class="cart-material-title">{{.Title}}</h3>
-                                    <span class="cart-material-coefficient">Коэффициент разрыхления: {{.Coefficient}}</span>
-                                    <span class="cart-material-volume">Объем грунта после выемки: {{$.volume}} м³</span>
+                        <div class="pit-material-content">
+                            <div class="pit-material-info">
+                                <div class="pit-material-header">
+                                    <h3 class="pit-material-title">{{.Title}}</h3>
+                                    <span class="pit-material-coefficient">Коэффициент разрыхления: {{.Coefficient}}</span>
+                                    <span class="pit-material-volume">Объем грунта после выемки: {{$.volume}} м³</span>
                                 </div>
                                 <a href="/material/{{.ID}}" class="material-details-link">подробнее</a>
                             </div>
-                            <div class="cart-material-actions">
+                            <div class="pit-material-actions">
                                 <div class="slope-parameters">
                                     <label class="slope-label">Угол откоса</label>
                                     <input type="number" class="slope-input" placeholder="0" step="1" min="0" max="179">
                                 </div>
                             </div>
                         </div>
-                        <button class="cart-item-remove">
-                            <img src="/static/img/urn_icon.png" alt="Удалить из корзины">
+                        <button class="pit-item-remove">
+                            <img src="/static/img/urn_icon.png" alt="Удалить из котлована">
                         </button>
                     </div>
                     {{end}}
                 </div>
                 {{else}}
-                <div class="empty-cart">
-                    <p>Корзина пуста</p>
+                <div class="empty-pits">
+                    <p>Котлован пуст</p>
                 </div>
                 {{end}}
             </div>
-
         </section>
     </main>
-
 </body>
 </html>
