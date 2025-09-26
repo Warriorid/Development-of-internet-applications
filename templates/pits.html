@@ -23,39 +23,40 @@
             <div class="pit-parameters">
                 <div class="parameter-input">
                     <label for="length">Длина (м)</label>
-                    <input type="number" id="length" placeholder="0.0" step="0.1" min="0">
+                    <input type="number" id="length" placeholder="0.0" step="0.1" min="0" value="{{.pit.Length}}">
                 </div>
                 <div class="parameter-input">
                     <label for="width">Ширина (м)</label>
-                    <input type="number" id="width" placeholder="0.0" step="0.1" min="0">
+                    <input type="number" id="width" placeholder="0.0" step="0.1" min="0" value="{{.pit.Width}}">
                 </div>
                 <div class="parameter-input">
                     <label for="depth">Глубина (м)</label>
-                    <input type="number" id="depth" placeholder="0.0" step="0.1" min="0">
+                    <input type="number" id="depth" placeholder="0.0" step="0.1" min="0" value="{{.pit.Depth}}">
                 </div>
             </div>
 
             <div class="pit-items">
-                {{if .pits}}
+                {{if .pit.PitMaterials}}
                 <div class="materials-list">
-                    {{range .pits}}
+                    {{range .pit.PitMaterials}}
                     <div class="pit-material-card">
                         <div class="pit-material-image">
-                            <img src="{{.ImageURL}}" alt="{{.Title}}">
+                            <img src="{{.Material.ImageURL}}" alt="{{.Material.Title}}">
                         </div>
                         
                         <div class="pit-material-content">
                             <div class="card-header">
-                                <span class="coefficient-header">Коэффициент разрыхления: {{.Coefficient}}</span>
+                                <span class="coefficient-header">Коэффициент разрыхления: {{.Material.Coefficient}}</span>
                             </div>
             
                             <div class="card-body">
-                                <span class="material-name">{{.Title}}</span>
-                                <a href="/material/{{.ID}}" class="material-details-link">подробнее</a>
+                                <span class="material-name">{{.Material.Title}}</span>
+                                <a href="/material/{{.Material.ID}}" class="material-details-link">подробнее</a>
                                 <div class="slope-input-group">
-                                    <input type="number" class="slope-input" placeholder="Угол откоса" step="1" min="0" max="179">
+                                    <input type="number" class="slope-input" placeholder="Угол откоса" 
+                                           step="1" min="0" max="179" value="{{.SlopeAngle}}">
                                 </div>
-                                <span class="volume-result">Объем грунта после выемки: {{$.volume}} м³</span>
+                                <span class="volume-result">Объем грунта после выемки: {{.Volume}} м³</span>
                                 <button class="pit-item-remove">
                                     <img src="/static/img/urn_icon.png" alt="Удалить">
                                 </button>
@@ -66,7 +67,7 @@
                 </div>
                 {{else}}
                 <div class="empty-pits">
-                    <p>Котлован пуст</p>
+                    <p>Котлованов нет</p>
                 </div>
                 {{end}}
             </div>
