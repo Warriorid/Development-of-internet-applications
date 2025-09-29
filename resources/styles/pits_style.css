@@ -172,14 +172,6 @@
     object-fit: contain;
 }
 
-.empty-pits {
-    text-align: center;
-    padding: 40px;
-    color: #777;
-    font-style: italic;
-    font-family: 'Roboto', sans-serif;
-}
-
 @media (max-width: 1024px) {
     .card-body {
         gap: 10px;
@@ -226,4 +218,34 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+
+.delete-cart-container {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.delete-cart-form {
+    display: inline-block;
+}
+
+.delete-cart-button {
+    padding: 12px 24px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font: 500 16px 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.delete-cart-button:hover {
+    background: #cc0000;
 }

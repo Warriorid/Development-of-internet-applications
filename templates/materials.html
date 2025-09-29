@@ -18,17 +18,21 @@
     
     <main class="main-content">
         <div class="pit-button-container">
-            <a href="/material/pits/{{ .pitId}}" class="pit-button-link">
-                <button class="pit-button">
+            {{if .hasActivePit}}
+            <a href="/materials/pits/{{ .pitId}}" class="pit-button-link">
+            {{end}}
+                <button class="pit-button {{if not .hasActivePit}}disabled{{end}}" {{if not .hasActivePit}}disabled{{end}}>
                     <img src="/static/img/basket_icon.png" alt="Котлован" class="pit-icon">
                     <span class="pit-count">{{ .pitCount }}</span>
                 </button>
+            {{if .hasActivePit}}
             </a>
+            {{end}}
         </div>
-
+        
         <section class="search-section">
             <form action="{{if .materials}}/materials{{else}}/materials{{end}}" method="GET" class="search-form">
-                <input type="text" name="materialTitle" placeholder="Поиск грунта" value="{{ .matetialTitle }}" class="search-input">
+                <input type="text" name="materialTitle" placeholder="Поиск грунта" value="{{ .materialTitle }}" class="search-input">
                 <button type="submit" class="search-button">🔍</button>
             </form>
         </section>
@@ -44,7 +48,12 @@
                     <div class="material-content">
                         <h3 class="material-title">{{ .Title }}</h3>
                         <p class="material-coefficient">Коэффициент разрыхления: <span>{{ .Coefficient }}</span></p>
-                        <a href="/material/{{ .ID }}" class="material-details">подробнее</a>
+                        <div class="material-actions">
+                            <form action="/materials/{{ .ID }}/add-to-pit" method="POST" class="add-to-pit-form">
+                                <button type="submit" class="add-to-pit-button">Добавить в котлован</button>
+                            </form>
+                            <a href="/materials/{{ .ID }}/add-to-pit" class="material-details">Подробнее</a>
+                        </div>
                     </div>
                 </div>
                 {{ end }}

@@ -38,17 +38,58 @@
     text-align: center;
 }
 
-.material-details {
-    display: block;
-    padding: 5px 10px;
-    background: #FFCD11;
-    color: black;
-    text-decoration: none;
-    border-radius: 4px;
-    width: 45%;
-    margin: 0 auto;
-    text-align: center;
+.material-actions {
+    display: flex;
+    gap: 10px;
+    align-items: stretch; 
+    margin-top: 15px;
+}
+
+.add-to-pit-form {
+    flex: 1;
+    display: flex;
+}
+
+.add-to-pit-button {
+    width: 100%; 
+    padding: 12px 8px; 
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font: 500 14px 'Roboto', sans-serif;
+    cursor: pointer;
     transition: background-color 0.3s;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px; 
+    box-sizing: border-box;
+}
+
+.add-to-pit-button:hover {
+    background: #45a049;
+}
+
+.material-details {
+    flex: 1;
+    padding: 12px 8px; 
+    background: #FFCD11;
+    color: #000;
+    text-decoration: none;
+    border-radius: 6px;
+    font: 500 14px 'Roboto', sans-serif;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    box-sizing: border-box; 
 }
 
 .material-details:hover {
