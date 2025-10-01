@@ -48,9 +48,12 @@ func (r *Repository) GetMaterialsByTitle(title string) ([]model.Material, error)
 }
 
 func (r *Repository) AddMaterialToPit(materialID int) error {
-    pitID, err := r.GetOrCreateDraftPit()
+    pitID, err := r.GetDraftPitID()
     if err != nil {
-        return fmt.Errorf("failed to get or create draft pit: %v", err)
+        pitID, err = r.CreateDraftPit()
+        if err != nil {
+            return fmt.Errorf("failed to create draft pit: %v", err)
+        }
     }
     
     var existingMaterial model.CalculationMaterial

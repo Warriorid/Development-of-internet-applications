@@ -33,11 +33,9 @@ func (h *Handler) GetMaterials(ctx *gin.Context) {
     pitID, err := h.Repository.GetDraftPitID()
 	hasDraftPit := err == nil
     if err != nil {
-        logrus.Error("Error getting draft pit ID:", err)
+        logrus.Println("Error getting draft pit ID:", err)
     }
-
-    pitCount := h.Repository.GetPitCount()
-	hasMaterials := pitCount > 0
+    pitCount := h.Repository.GetPitCount(pitID)
 
     ctx.HTML(http.StatusOK, "materials.html", gin.H{
         "time":          time.Now().Format("15:04:05"),
@@ -45,7 +43,7 @@ func (h *Handler) GetMaterials(ctx *gin.Context) {
         "materialTitle": searchMaterialTitle,
         "pitCount":      pitCount,
         "pitId":         pitID, 
-		"hasActivePit": hasDraftPit && hasMaterials,
+		"hasActivePit": hasDraftPit,
     })
 }
 
@@ -68,14 +66,6 @@ func (h *Handler) GetMaterial(c *gin.Context) {
 		})
 		return
 	}
-	if material.ID == 0 {
-        logrus.Info("Material not found, ID:", id)
-        c.HTML(http.StatusNotFound, "error.html", gin.H{
-            "error": "Материал не найден",
-            "code":  404,
-        })
-        return
-    }
 	c.HTML(http.StatusOK, "material_info.html", gin.H{
 		"material": material,
 	})

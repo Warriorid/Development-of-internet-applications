@@ -7,12 +7,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (r *Repository) GetDraftPit(id int) (model.PitsCalculation, error) {
+func (r *Repository) GetPit(id int) (model.PitsCalculation, error) {
     var pit model.PitsCalculation
     creatorID := 2
     
     err := r.db.Preload("Creator").Preload("Moderator").Preload("Materials").Preload("Materials.Material").
-        Where("id = ? AND status = ? AND creator_id = ?", id, "draft", creatorID).
+        Where("id = ? AND creator_id = ? AND status != 'deleted'", id, creatorID).
         First(&pit).Error
     if err != nil {
         return model.PitsCalculation{}, err
@@ -20,17 +20,13 @@ func (r *Repository) GetDraftPit(id int) (model.PitsCalculation, error) {
     return pit, nil
 }
 
-func (r *Repository) GetPitCount() int64 {
+func (r *Repository) GetPitCount(id int) int64 {
     var count int64
-    creatorID := 2
-
-    err := r.db.Model(&model.PitsCalculation{}).
-        Joins("JOIN calculation_materials cm ON pits_calculations.id = cm.calculation_id").
-        Where("pits_calculations.creator_id = ? AND pits_calculations.status = ?", creatorID, "draft").
+    err := r.db.Model(&model.CalculationMaterial{}).
+        Where("calculation_id = ?", id).
         Count(&count).Error
-
     if err != nil {
-        logrus.Println("Error counting materials in draft pit:", err)
+        logrus.Println("Error counting materials in pit:", err)
         return 0
     }
     return count
@@ -51,7 +47,7 @@ func (r *Repository) GetDraftPitID() (int, error) {
 }
 
 func (r *Repository) DeletePit(pitId int) error {
-    query := "UPDATE pits_calculations SET status = 'deleted' WHERE id = $1 AND status = 'draft'"
+    query := "UPDATE pits_calculations SET status = 'deleted' WHERE id = $1"
     result := r.db.Exec(query, pitId)
     if result.Error != nil {
         return result.Error
@@ -63,26 +59,17 @@ func (r *Repository) DeletePit(pitId int) error {
 }
 
 
-func (r *Repository) GetOrCreateDraftPit() (int, error) {
+func (r *Repository) CreateDraftPit() (int, error) {
     creatorID := 2
     
-    var pit model.PitsCalculation
-    err := r.db.Where("creator_id = ? AND status = ?", creatorID, "draft").
-        Select("id").
-        First(&pit).Error
-        
-    if err != nil {
-        newPit := model.PitsCalculation{
-            CreatorID: creatorID,
-            Status:    "draft",
-        }
-        
-        err = r.db.Create(&newPit).Error
-        if err != nil {
-            return 0, err
-        }
-        return newPit.ID, nil
+    newPit := model.PitsCalculation{
+        CreatorID: creatorID,
+        Status:    "draft",
     }
-    
-    return pit.ID, nil
+        
+    err := r.db.Create(&newPit).Error
+    if err != nil {
+        return 0, err
+    }
+    return newPit.ID, nil
 }

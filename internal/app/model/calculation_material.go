@@ -4,10 +4,10 @@ package model
 type CalculationMaterial struct {
     CalculationID int     `gorm:"primaryKey;column:calculation_id"`
     MaterialID    int     `gorm:"primaryKey;column:material_id"`
-    SlopeAngle    int     `gorm:"null;column:slope_angle"`
-    VolumeResult  float64 `gorm:"null;column:volume_result"`
-    Material    Material        `gorm:"foreignKey:MaterialID;references:ID"`
-    Calculation PitsCalculation `gorm:"foreignKey:CalculationID;references:ID"`
+    SlopeAngle    int     `gorm:"column:slope_angle;not null;default:0;check:slope_angle>=0 AND slope_angle<=45"`
+    VolumeResult  float64 `gorm:"column:volume_result;null"`
+    Material    Material        `gorm:"foreignKey:MaterialID;references:ID;constraint:OnDelete:RESTRICT"`
+    Calculation PitsCalculation `gorm:"foreignKey:CalculationID;references:ID;constraint:OnDelete:RESTRICT"`
 }
 
 

@@ -18,7 +18,7 @@ func (h *Handler) GetPit(c *gin.Context) {
         })
         return
     }
-    pit, err := h.Repository.GetDraftPit(id)
+    pit, err := h.Repository.GetPit(id)
     if err != nil {
         logrus.Info("Draft pit not found, ID:", id)
         c.HTML(http.StatusNotFound, "error.html", gin.H{
