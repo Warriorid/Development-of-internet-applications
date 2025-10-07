@@ -6,12 +6,12 @@ import (
 
 	"gorm.io/gorm"
 )
-
 type Repository struct{
 	Material
    Pits
+   CalculationMaterial
+   User
 }
-
 type Material interface{
    GetMaterials(materialTitle string)([]model.Material, error)
    GetMaterial(id int) (model.Material, error)
@@ -25,7 +25,6 @@ type Material interface{
 
    
 }
-
 type Pits interface{
    GetDraftPitWithItemsCount(creatorID int) (int, int, error)
    GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error)
@@ -36,12 +35,23 @@ type Pits interface{
    CompletePit(id, moderatorID int, status string) error
    DeletePit(id int) error
 }
-
-
+type CalculationMaterial interface{
+   RemoveMaterialFromPit(calculationID, materialID int) error
+   UpdateCalculationMaterial(calculationID, materialID int, slopeAngle int) error
+}
+type User interface {
+   CreateUser(user *model.Users) error
+   GetUserByID(id int) (*model.Users, error)
+   UpdateUser(id int, user *model.Users) error
+   GetUserByUsername(username string) (*model.Users, error)
+   Authentication(username, password string) (*model.Users, error)
+}
 
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
       Material: NewMaterialPostgres(db),
       Pits: NewPitsPostgres(db),
+      CalculationMaterial: NewCalculationMaterialPostgres(db),
+      User: NewUserPostgres(db),
    }
 }

@@ -63,7 +63,7 @@ func (h *Handler) GetPitWithMaterials(c *gin.Context) {
         newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
         return
     }
-    creatorId := 4
+    creatorId := 2
 
     pit, err := h.service.GetPitWithMaterials(id, creatorId)
     if err != nil {

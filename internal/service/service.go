@@ -10,6 +10,8 @@ import (
 type Service struct{
 	Material
 	Pits
+	CalculationMaterial
+	User
 }
 
 type Material interface{
@@ -32,9 +34,24 @@ type Pits interface{
 	DeletePit(id int) error
 }
 
+type CalculationMaterial interface{
+	RemoveMaterialFromPit(calculationID, materialID int) error
+	UpdateCalculationMaterial(calculationID, materialID int, slopeAngle int) error
+ }
+
+type User interface {
+	Register(user *model.Users) (*model.Users, error)
+	Login(username, password string) (*model.Users, error)
+	GetUserProfile(id int) (*model.Users, error)
+	UpdateUserProfile(id int, username, password string) (*model.Users, error)
+	Logout() error
+}
+
 func NewService(repo *repository.Repository, minio *minio.MinioClient) *Service {
 	return &Service{
 		Material: NewMaterialService(repo.Material, minio),
 		Pits: NewPitsService(repo.Pits),
+		CalculationMaterial: NewCalculationMaterialService(repo.CalculationMaterial),
+		User: NewUserService(repo.User),
 	}
 }

@@ -67,7 +67,7 @@ func (h *Handler) UpdateMaterial(c *gin.Context) {
 		return
 	}
 	
-	if err := h.service.UpdateMaterial(id, &material); err != nil {
+	if err := h.service.Material.UpdateMaterial(id, &material); err != nil {
 		if err.Error() == "material not found" {
             newErrorResponse(c, http.StatusNotFound, err.Error())
         } else {
@@ -87,7 +87,7 @@ func (h *Handler) DeleteMaterial(c *gin.Context) {
 	}
 
 	
-	if err := h.service.DeleteMaterial(id); err != nil {
+	if err := h.service.Material.DeleteMaterial(id); err != nil {
 		if err.Error() == "material not found" {
             newErrorResponse(c, http.StatusNotFound, err.Error())
         } else {
