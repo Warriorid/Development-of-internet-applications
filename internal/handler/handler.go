@@ -29,17 +29,16 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 		materials.POST("/:id/image", h.UploadMaterialImage)
 	}
 
-	// pits := api.Group("/pits")
-	// {
-	// 	pits.GET("/cart", h.GetPitCart)
-	// 	pits.GET("", h.GetPits)
-	// 	pits.GET("/:id", h.GetPit)
-	// 	pits.PUT("/:id", h.UpdatePit)
-	// 	pits.PUT("/:id/form", h.FormPit)
-	// 	pits.PUT("/:id/complete", h.CompletePit)
-	// 	pits.PUT("/:id/reject", h.RejectPit)
-	// 	pits.DELETE("/:id", h.DeletePit)
-	// }
+	pits := api.Group("/pits")
+	{
+		pits.GET("/draft", h.GetDraftPit)
+		pits.GET("", h.GetPits)
+		pits.GET("/:id", h.GetPitWithMaterials)
+		pits.PUT("/:id", h.UpdatePit)
+		pits.PUT("/:id/form", h.FormPit)
+		pits.PUT("/:id/complete", h.CompletePit)
+		pits.DELETE("/:id", h.DeletePit)
+	}
 	
 	// // Calculation Material domain (M-M)
 	// calculationMaterials := api.Group("/calculation-materials")

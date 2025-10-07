@@ -2,6 +2,7 @@ package repository
 
 import (
 	"DIA/internal/model"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -25,7 +26,16 @@ type Material interface{
    
 }
 
-type Pits interface{}
+type Pits interface{
+   GetDraftPitWithItemsCount(creatorID int) (int, int, error)
+   GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error)
+   GetPitWithMaterials(id, creatorId int) (model.PitsCalculation, []model.Material, error)
+   UpdatePit(id int, input model.UpdatePitParam) error
+   FormPit(id int) error
+   ValidatePitForForming(id, creatorId int) error
+   CompletePit(id, moderatorID int, status string) error
+   DeletePit(id int) error
+}
 
 
 

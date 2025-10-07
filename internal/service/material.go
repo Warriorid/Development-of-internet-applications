@@ -3,20 +3,20 @@ package service
 import (
 	"DIA/internal/model"
 	"DIA/internal/repository"
-	"DIA/pkg"
+	"DIA/pkg/minio"
 	"bytes"
 	"fmt"
 )
 
 type MaterialService struct {
     repo repository.Material
-	minioClient *pkg.MinioClient
+	imageSrorage minio.ImageStorage
 }
 
-func NewMaterialService(repo repository.Material, minioClient *pkg.MinioClient) *MaterialService {
+func NewMaterialService(repo repository.Material, imageSrorage minio.ImageStorage) *MaterialService {
     return &MaterialService{
 		repo: repo,
-		minioClient: minioClient,
+		imageSrorage: imageSrorage,
 	}
 }
 
@@ -51,7 +51,7 @@ func (s *MaterialService) DeleteMaterial(id int) error {
 		return fmt.Errorf("material not found: %s", err)
 	}
 	if material.ImageURL != "" {
-        if err := s.minioClient.DeleteImage(id); err != nil {
+        if err := s.imageSrorage.DeleteImage(material.Title); err != nil {
             fmt.Printf("Warning: failed to delete image from Minio: %v\n", err)
         }
     }
@@ -74,7 +74,7 @@ func (s *MaterialService) UploadMaterialImage(id int, file []byte, filename stri
     }
     
     reader := bytes.NewReader(file)
-    imageURL, err := s.minioClient.UploadImage(material.Title, reader, int64(len(file)), filename)
+    imageURL, err := s.imageSrorage.UploadImage(material.Title, reader, int64(len(file)), filename)
     if err != nil {
         return err
     }

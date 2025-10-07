@@ -4,8 +4,9 @@ import (
 	"DIA/internal/handler"
 	"DIA/internal/repository"
 	"DIA/internal/service"
-	"DIA/pkg/config"
 	"DIA/pkg"
+	"DIA/pkg/config"
+	"DIA/pkg/minio"
 	"context"
 	"fmt"
 	"net/http"
@@ -38,7 +39,7 @@ func NewApp() *Application {
 		logrus.Fatal(err.Error())
 	}
 
-	minioClient, err := pkg.NewMinioClient()
+	minioClient, err := minio.NewMinioClient()
     if err != nil {
         logrus.Fatalf("failed to create minio client: %v", err)
     }
