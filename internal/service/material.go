@@ -36,13 +36,12 @@ func (s *MaterialService) CreateMaterial(material *model.Material) (model.Materi
 	return s.repo.CreateMaterial(material)
 }
 
-func (s *MaterialService) UpdateMaterial(id int, material *model.Material) (error) {
-	*material, _ = s.repo.GetMaterial(id)
-	if material.ID == 0 {
-		return fmt.Errorf("material not found")
-	}
-
-	return s.repo.UpdateMaterial(id, material)
+func (s *MaterialService) UpdateMaterial(id int, material *model.Material) error {
+    existingMaterial, err := s.repo.GetMaterial(id)
+    if err != nil || existingMaterial.ID == 0 {
+        return fmt.Errorf("material not found")
+    }
+    return s.repo.UpdateMaterial(id, material)
 }
 
 func (s *MaterialService) DeleteMaterial(id int) error {

@@ -11,7 +11,7 @@ import (
 
 
 func (h *Handler) GetDraftPit(c *gin.Context) {
-	creatorID := 2 
+	creatorID := 5 
 
 	pitID, itemsCount, err := h.service.GetDraftPitWithItemsCount(creatorID)
 	if err != nil {
@@ -63,7 +63,7 @@ func (h *Handler) GetPitWithMaterials(c *gin.Context) {
         newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
         return
     }
-    creatorId := 2
+    creatorId := 5
 
     pit, err := h.service.GetPitWithMaterials(id, creatorId)
     if err != nil {
@@ -108,7 +108,7 @@ func (h *Handler) FormPit(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
 		return
 	}
-	creatorId := 2
+	creatorId := 5
 	if err := h.service.FormPit(id, creatorId); err != nil {
 		switch {
 		case err.Error() == "not found":

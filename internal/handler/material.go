@@ -100,7 +100,7 @@ func (h *Handler) DeleteMaterial(c *gin.Context) {
 }
 
 func (h *Handler) AddMaterialToPit(c *gin.Context) {
-	userId := 2
+	userId := 5
 	materialId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid material ID")

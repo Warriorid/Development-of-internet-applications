@@ -18,22 +18,24 @@ func NewPitsPostgres(db *gorm.DB) *PitsPostgres {
 }
 
 func (r *PitsPostgres) GetDraftPitWithItemsCount(creatorID int) (int, int, error) {
-	var pit model.PitsCalculation
-	var itemsCount int64
-
-	err := r.db.Where("status = ? AND creator_id = ?", "draft", creatorID).First(&pit).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return 0, 0, nil
-		}
-		return 0, 0, err
-	}
-	err = r.db.Model(&model.CalculationMaterial{}).Where("calculation_id = ?", pit.ID).Count(&itemsCount).Error
-	if err != nil {
-		return 0, 0, err
-	}
-
-	return pit.ID, int(itemsCount), nil
+    var pit model.PitsCalculation
+    err := r.db.Where("creator_id = ? AND status = 'draft'", creatorID).First(&pit).Error
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return 0, 0, nil
+        }
+        return 0, 0, err
+    }
+    
+    var count int64
+    err = r.db.Model(&model.CalculationMaterial{}).
+        Where("calculation_id = ?", pit.ID).
+        Count(&count).Error
+    if err != nil {
+        return 0, 0, err
+    }
+    
+    return pit.ID, int(count), nil
 }
 
 
@@ -132,9 +134,6 @@ func (r *PitsPostgres) ValidatePitForForming(id, creatorId int) error {
 	if materialsWithNullSlope > 0 {
 		return fmt.Errorf("all materials must have slope angle specified")
 	}
-	if pit.PitLength <= 0.1 || pit.PitWidth <= 0.1 || pit.PitDepth <= 0.1 {
-		return fmt.Errorf("pit dimensions must be greater than default values")
-	}
 	return nil
 }
 
@@ -189,10 +188,10 @@ func (r *PitsPostgres) CalculatePitVolume(pitID int) (float64, error) {
 
 	for _, cm := range calculationMaterials {
 		volume, err := model.CalculateExcavationVolume(
-			pit.PitLength,
-			pit.PitWidth,
-			pit.PitDepth,
-			float64(cm.SlopeAngle),
+			*pit.PitLength,
+			*pit.PitWidth,
+			*pit.PitDepth,
+			float64(*cm.SlopeAngle),
 			cm.Material.Coefficient,
 		)
 		if err != nil {

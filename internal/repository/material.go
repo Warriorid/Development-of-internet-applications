@@ -62,9 +62,9 @@ func (r *MaterialPostgres) GetOrCreateDraftPit(userID int) (int, error) {
             Status:    "draft",
             CreatorID: userID,
             CreatedAt: time.Now(),
-            PitLength: 0.1,
-            PitWidth:  0.1,
-            PitDepth:  0.1,
+            PitLength: nil,
+            PitWidth:  nil,
+            PitDepth:  nil,
         }
         err = r.db.Create(&newPit).Error
         if err != nil {
@@ -80,7 +80,7 @@ func (r *MaterialPostgres) AddMaterialToPit(calculationId, materialId int) error
 	calculationMaterial := model.CalculationMaterial{
 		CalculationID: calculationId,
 		MaterialID: materialId,
-		SlopeAngle: 0,
+		SlopeAngle: nil,
 	}
 	err := r.db.Create(&calculationMaterial).Error
 	return err

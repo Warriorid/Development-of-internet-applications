@@ -9,11 +9,11 @@ type PitsCalculation struct {
     FormedAt    time.Time `gorm:"column:formed_at;null" json:"formed_at"`   
     CompletedAt time.Time `gorm:"column:completed_at;null" json:"completed_at"`
     CreatorID   int        `gorm:"column:creator_id;not null" json:"creator_id"`
-    ModeratorID int       `gorm:"column:moderator_id;null" json:"moderator_id"`  
+    ModeratorID *int       `gorm:"column:moderator_id;null" json:"moderator_id"`  
     
-    PitLength   float64 `gorm:"column:pit_length;not null;default:0.1" json:"pit_length"`
-    PitWidth    float64 `gorm:"column:pit_width;not null;default:0.1" json:"pit_width"`
-    PitDepth    float64 `gorm:"column:pit_depth;not null;default:0.1" json:"pit_depth"`
+    PitLength   *float64 `gorm:"column:pit_length;null" json:"pit_length"`
+    PitWidth    *float64 `gorm:"column:pit_width;null" json:"pit_width"`
+    PitDepth    *float64 `gorm:"column:pit_depth;null" json:"pit_depth"`
 }
 
 type PitsCalculationWithMaterial struct {
@@ -41,18 +41,28 @@ type UpdatePitParam struct {
 
 
 func (p *PitsCalculation) ToPitsCalculationWithMaterial(materials []Material) PitsCalculationWithMaterial {
-    return PitsCalculationWithMaterial{
+    result := PitsCalculationWithMaterial{
         ID:          p.ID,
         Status:      p.Status,
         CreatedAt:   p.CreatedAt,
         FormedAt:    p.FormedAt,
         CompletedAt: p.CompletedAt,
         CreatorID:   p.CreatorID,
-        ModeratorID: p.ModeratorID,
-        PitLength:   p.PitLength,
-        PitWidth:    p.PitWidth,
-        PitDepth:    p.PitDepth,
         Materials:   materials,
     }
+    if p.ModeratorID != nil {
+        result.ModeratorID = *p.ModeratorID
+    }
+    if p.PitLength != nil {
+        result.PitLength = *p.PitLength
+    }
+    if p.PitWidth != nil {
+        result.PitWidth = *p.PitWidth
+    }
+    if p.PitDepth != nil {
+        result.PitDepth = *p.PitDepth
+    }
+    
+    return result
 }
 

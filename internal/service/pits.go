@@ -17,11 +17,7 @@ func NewPitsService(repo repository.Pits) *PitsService {
 }
 
 func (s *PitsService) GetDraftPitWithItemsCount(creatorID int) (int, int, error) {
-	pitId, materialsCount, err := s.repo.GetDraftPitWithItemsCount(creatorID)
-	if pitId == 0 {
-		return 0, 0, fmt.Errorf("pit not found")
-	}
-	return pitId, materialsCount, err
+    return s.repo.GetDraftPitWithItemsCount(creatorID)
 }
 
 func (s *PitsService) GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error) {
