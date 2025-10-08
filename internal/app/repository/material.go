@@ -10,7 +10,7 @@ import (
 
 func (r *Repository) GetMaterials() ([]model.Material, error) {
 	var materials []model.Material
-	err := r.db.Find(&materials).Error
+	err := r.db.Where("is_deleted = ?", false).Find(&materials).Error
 	if err != nil {
 		return nil, err
 	}
