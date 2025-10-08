@@ -34,5 +34,5 @@ func CalculateExcavationVolume(length, width, depth, angle, coefficient float64)
 	pyramidVolume := (depth / 3) * (bottomArea + topArea + math.Sqrt(bottomArea*topArea))
 	totalVolume := pyramidVolume * coefficient
 	
-	return totalVolume, nil
+	return math.Round(totalVolume * 100) / 100, nil
 }

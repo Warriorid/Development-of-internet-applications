@@ -98,6 +98,7 @@ func (r *PitsPostgres) FormPit(id int) error {
 		Updates(map[string]interface{}{
 			"status":    "formed",
 			"formed_at": time.Now(),
+			"completed_at": nil,
 		}).Error
 }
 func (r *PitsPostgres) ValidatePitForForming(id, creatorId int) error {
