@@ -51,19 +51,11 @@ func (h *Handler) GetMaterial(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		logrus.Error("Invalid material ID:", err)
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"error": "Неверный ID материала",
-			"code":  400,
-		})
 		return
 	}
 	material, err := h.Repository.GetMaterial(id)
 	if err != nil {
 		logrus.Info("Material not found, ID:", id)
-		c.HTML(http.StatusNotFound, "error.html", gin.H{
-			"error": "Материал не найден",
-			"code":  404,
-		})
 		return
 	}
 	c.HTML(http.StatusOK, "material_info.html", gin.H{
@@ -75,20 +67,12 @@ func (h *Handler) AddMaterialToPit(c *gin.Context) {
 	materialId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		logrus.Error("uncorrenct materialId,", err)
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"error": "неверный id материала",
-			"code": 400,
-		})
-		return
+		
 	}
     
 	err = h.Repository.AddMaterialToPit(materialId)
     if err != nil {
         logrus.Error("Error adding material to pit:", err)
-        c.HTML(http.StatusInternalServerError, "error.html", gin.H{
-            "error": "Ошибка при добавлении в заявку",
-            "code":  500,
-        })
         return
     }
 	c.Redirect(http.StatusFound, "/materials")

@@ -65,6 +65,9 @@ func (r *Repository) CreateDraftPit() (int, error) {
     newPit := model.PitsCalculation{
         CreatorID: creatorID,
         Status:    "draft",
+        PitLength: nil,
+        PitWidth:  nil,
+        PitDepth:  nil,
     }
         
     err := r.db.Create(&newPit).Error

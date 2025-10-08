@@ -66,10 +66,8 @@
                     {{end}}
                 </div>
                 <div class="delete-cart-container">
-                    <form action="/materials/pits/{{.pit.ID}}/delete" method="POST" class="delete-cart-form">
-                        <button type="submit" class="delete-cart-button">
-                            Удалить
-                        </button>
+                    <form action="/pits-calculations/{{.pit.ID}}/delete" method="POST" class="delete-cart-form">
+                        <button type="submit" class="delete-cart-button">Удалить</button>
                     </form>
                 </div>
                 {{end}}

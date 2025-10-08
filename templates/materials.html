@@ -19,7 +19,7 @@
     <main class="main-content">
         <div class="pit-button-container">
             {{if .hasActivePit}}
-            <a href="/materials/pits/{{ .pitId}}" class="pit-button-link">
+            <a href="/pits-calculations/{{ .pitId}}" class="pit-button-link">
             {{end}}
                 <button class="pit-button {{if not .hasActivePit}}disabled{{end}}" {{if not .hasActivePit}}disabled{{end}}>
                     <img src="/static/img/basket_icon.png" alt="Котлован" class="pit-icon">
