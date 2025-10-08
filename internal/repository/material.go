@@ -49,9 +49,9 @@ func (r *MaterialPostgres) DeleteMaterial(id int) error {
 }
 
 
-func (r *MaterialPostgres) GetOrCreateDraftPit() (int, error) {
+func (r *MaterialPostgres) GetOrCreateDraftPit(userID int) (int, error) {
     var pit model.PitsCalculation
-    err := r.db.Where("status = ?", "draft").First(&pit).Error
+    err := r.db.Where("status = ? AND creator_id = ?", "draft", userID).First(&pit).Error
     
     if err == nil {
         return pit.ID, nil
@@ -60,7 +60,7 @@ func (r *MaterialPostgres) GetOrCreateDraftPit() (int, error) {
     if errors.Is(err, gorm.ErrRecordNotFound) {
         newPit := model.PitsCalculation{
             Status:    "draft",
-            CreatorID: 2,
+            CreatorID: userID,
             CreatedAt: time.Now(),
             PitLength: 0.1,
             PitWidth:  0.1,

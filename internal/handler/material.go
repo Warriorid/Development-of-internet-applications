@@ -100,13 +100,14 @@ func (h *Handler) DeleteMaterial(c *gin.Context) {
 }
 
 func (h *Handler) AddMaterialToPit(c *gin.Context) {
+	userId := 2
 	materialId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid material ID")
 		return
 	}
 	
-	if err := h.service.AddMaterialToPit(materialId); err != nil {
+	if err := h.service.AddMaterialToPit(userId, materialId); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}

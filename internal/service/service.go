@@ -20,7 +20,7 @@ type Material interface{
 	CreateMaterial(material *model.Material) (model.Material, error)
 	UpdateMaterial(id int, material *model.Material) error
 	DeleteMaterial(id int) error 
-	AddMaterialToPit(id int) error
+	AddMaterialToPit(userId, id int) error
 	UploadMaterialImage(id int, file []byte, filename string) error
 }
 

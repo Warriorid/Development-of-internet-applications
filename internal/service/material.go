@@ -59,8 +59,8 @@ func (s *MaterialService) DeleteMaterial(id int) error {
 	return s.repo.DeleteMaterial(id)
 }
 
-func (s *MaterialService) AddMaterialToPit(materialId int) error {
-    pitId, err := s.repo.GetOrCreateDraftPit()
+func (s *MaterialService) AddMaterialToPit(userId, materialId int) error {
+    pitId, err := s.repo.GetOrCreateDraftPit(userId)
     if err != nil {
         return err
     }

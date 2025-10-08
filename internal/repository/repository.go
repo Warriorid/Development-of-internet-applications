@@ -21,7 +21,7 @@ type Material interface{
    AddMaterialToPit(calculationId, materialId int) error
    UpdateMaterialImage(id int, imageURL string) error
 
-   GetOrCreateDraftPit() (int, error)
+   GetOrCreateDraftPit(userId int) (int, error)
 
    
 }
