@@ -42,18 +42,18 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	
 	calculationMaterials := api.Group("/calculation-materials")
 	{
-		calculationMaterials.DELETE("", h.removeMaterialFromPit)
-		calculationMaterials.PUT("", h.UpdateCalculationMaterial)
+		calculationMaterials.DELETE("/:calculation_id/:material_id", h.removeMaterialFromPit)
+		calculationMaterials.PUT("/:calculation_id/:material_id", h.UpdateCalculationMaterial)
 	}
 	
 	
 	users := api.Group("/users")
 	{
-		users.POST("/register", h.RegisterUser)
+		users.POST("", h.RegisterUser)
     	users.POST("/login", h.Login)
     	users.POST("/logout", h.Logout)
-    	users.GET("/profile/:id", h.GetUserProfile)
-    	users.PUT("/profile/:id", h.UpdateUserProfile)
+    	users.GET("/:id", h.GetUserProfile)
+    	users.PUT("/:id", h.UpdateUserProfile)
 	}
 
 }
