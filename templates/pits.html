@@ -57,9 +57,12 @@
                                 <a href="/materials/{{.Material.ID}}" class="material-details-link">подробнее</a>
                                 <div class="slope-input-group">
                                     <input type="number" class="slope-input" placeholder="Угол откоса" 
-                                           step="1" min="0" max="45" value="{{.SlopeAngle}}">
+                                           step="1" min="0" max="45" 
+                                           value="{{if .SlopeAngle}}{{.SlopeAngle}}{{else}}0{{end}}">
                                 </div>
-                                <span class="volume-result">Объем грунта после выемки: {{.VolumeResult}} м³</span>
+                                <span class="volume-result">Объем грунта после выемки: 
+                                    {{if .VolumeResult}}{{.VolumeResult}}{{else}}0{{end}} м³
+                                </span>
                             </div>
                         </div>
                     </div>
