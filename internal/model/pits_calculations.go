@@ -23,20 +23,20 @@ type PitsCalculationWithMaterial struct {
     FormedAt    time.Time `json:"formed_at"`   
     CompletedAt time.Time `json:"completed_at"`
     CreatorID   int        `json:"creator_id"`
-    ModeratorID int       `json:"moderator_id"`  
+    ModeratorID *int       `json:"moderator_id"`  
     
-    PitLength   float64 `json:"pit_length"`
-    PitWidth    float64 `json:"pit_width"`
-    PitDepth    float64 `json:"pit_depth"`
+    PitLength   *float64 `json:"pit_length"`
+    PitWidth    *float64 `json:"pit_width"`
+    PitDepth    *float64 `json:"pit_depth"`
 
     Materials []Material
 
 }
 
 type UpdatePitParam struct {
-    PitLength   float64 `json:"pit_length"`
-    PitWidth    float64 `json:"pit_width"`
-    PitDepth    float64 `json:"pit_depth"`
+    PitLength   *float64 `json:"pit_length"`
+    PitWidth    *float64 `json:"pit_width"`
+    PitDepth    *float64 `json:"pit_depth"`
 }
 
 
@@ -51,16 +51,16 @@ func (p *PitsCalculation) ToPitsCalculationWithMaterial(materials []Material) Pi
         Materials:   materials,
     }
     if p.ModeratorID != nil {
-        result.ModeratorID = *p.ModeratorID
+        result.ModeratorID = p.ModeratorID
     }
     if p.PitLength != nil {
-        result.PitLength = *p.PitLength
+        result.PitLength = p.PitLength
     }
     if p.PitWidth != nil {
-        result.PitWidth = *p.PitWidth
+        result.PitWidth = p.PitWidth
     }
     if p.PitDepth != nil {
-        result.PitDepth = *p.PitDepth
+        result.PitDepth = p.PitDepth
     }
     
     return result

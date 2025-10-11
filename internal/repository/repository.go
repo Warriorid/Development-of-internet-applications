@@ -32,7 +32,7 @@ type Pits interface{
    UpdatePit(id int, input model.UpdatePitParam) error
    FormPit(id int) error
    ValidatePitForForming(id, creatorId int) error
-   CompletePit(id, moderatorID int, status string) error
+   CompletePit(id, moderatorID int, status string, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) error
    DeletePit(id int) error
 }
 type CalculationMaterial interface{

@@ -4,7 +4,9 @@ import (
 	"DIA/internal/model"
 	"DIA/internal/repository"
 	"fmt"
+	"math"
 	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -56,8 +58,7 @@ func (s *PitsService) FormPit(id, creatorId int) error {
 }
 
 func (s *PitsService) CompletePit(id, moderatorID int, status string) error {
-
-	err := s.repo.CompletePit(id, moderatorID, status)
+	err := s.repo.CompletePit(id, moderatorID, status, s.calculateExcavationVolume)
 	if err != nil {
 		if err.Error() == "pit not found" {
 			return fmt.Errorf("not found")
@@ -65,6 +66,28 @@ func (s *PitsService) CompletePit(id, moderatorID int, status string) error {
 		return err
 	}
 	return nil
+}
+
+func (s *PitsService) calculateExcavationVolume(length, width, depth, angle, coefficient float64) (float64, error) {
+	mainVolume := length * width * depth
+
+	if angle == 0 {
+		return mainVolume * coefficient, nil
+	}
+
+	angleRad := angle * math.Pi / 180
+	tan := math.Tan(angleRad)
+	
+	topLength := length + 2*depth*tan
+	topWidth := width + 2*depth*tan
+	
+	bottomArea := length * width     
+	topArea := topLength * topWidth
+	
+	pyramidVolume := (depth / 3) * (bottomArea + topArea + math.Sqrt(bottomArea*topArea))
+	totalVolume := pyramidVolume * coefficient
+	
+	return math.Round(totalVolume * 100) / 100, nil
 }
 
 func (s *PitsService) DeletePit(id int) error {

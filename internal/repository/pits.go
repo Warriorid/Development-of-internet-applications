@@ -1,4 +1,3 @@
-// pits.go
 package repository
 
 import (
@@ -137,7 +136,8 @@ func (r *PitsPostgres) ValidatePitForForming(id, creatorId int) error {
 	return nil
 }
 
-func (r *PitsPostgres) CompletePit(id, moderatorID int, status string) error {
+
+func (r *PitsPostgres) CompletePit(id, moderatorID int, status string, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) error {
 	var pit model.PitsCalculation
 	err := r.db.Where("id = ? AND status = 'formed'", id).First(&pit).Error
 	if err != nil {
@@ -146,8 +146,9 @@ func (r *PitsPostgres) CompletePit(id, moderatorID int, status string) error {
 		}
 		return err
 	}
+	
 	if status == "completed" {
-		_, err = r.CalculatePitVolume(id)
+		_, err = r.CalculatePitVolume(id, calculateFunc) 
 		if err != nil {
 			return err
 		}
@@ -171,36 +172,58 @@ func (r *PitsPostgres) CompletePit(id, moderatorID int, status string) error {
 	return nil
 }
 
-func (r *PitsPostgres) CalculatePitVolume(pitID int) (float64, error) {
+func (r *PitsPostgres) CalculatePitVolume(pitID int, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) (float64, error) {
 	var calculationMaterials []model.CalculationMaterial
 	var totalVolume float64
+	
 	err := r.db.Preload("Material").
 		Where("calculation_id = ?", pitID).
 		Find(&calculationMaterials).Error
 	if err != nil {
 		return 0, err
 	}
+	
 	var pit model.PitsCalculation
 	err = r.db.Where("id = ?", pitID).First(&pit).Error
 	if err != nil {
 		return 0, err
 	}
+	length := 0.0
+	if pit.PitLength != nil {
+		length = *pit.PitLength
+	}
+	
+	width := 0.0
+	if pit.PitWidth != nil {
+		width = *pit.PitWidth
+	}
+	
+	depth := 0.0
+	if pit.PitDepth != nil {
+		depth = *pit.PitDepth
+	}
 
 	for _, cm := range calculationMaterials {
-		volume, err := model.CalculateExcavationVolume(
-			*pit.PitLength,
-			*pit.PitWidth,
-			*pit.PitDepth,
-			float64(*cm.SlopeAngle),
+		slopeAngle := 0
+		if cm.SlopeAngle != nil {
+			slopeAngle = *cm.SlopeAngle
+		}
+
+		volume, err := calculateFunc(
+			length, 
+			width,   
+			depth,     
+			float64(slopeAngle), 
 			cm.Material.Coefficient,
 		)
 		if err != nil {
 			return 0, err
 		}
 		
+		volumePtr := &volume
 		err = r.db.Model(&model.CalculationMaterial{}).
 			Where("calculation_id = ? AND material_id = ?", pitID, cm.MaterialID).
-			Update("volume_result", volume).Error
+			Update("volume_result", volumePtr).Error
 		if err != nil {
 			return 0, err
 		}
