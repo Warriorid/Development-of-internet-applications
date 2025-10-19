@@ -38,35 +38,61 @@ func (r *PitsPostgres) GetDraftPitWithItemsCount(creatorID int) (int, int, error
 }
 
 
-func (r *PitsPostgres) GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error) {
-	var pits []model.PitsCalculation
+func (r *PitsPostgres) GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculationListItem, error) {
+    var pits []model.PitsCalculation
+    
+    query := r.db.Where("status != ? AND status != ?", "draft", "deleted")
 
-	query := r.db.Where("status != ? AND status != ?", "draft", "deleted")
-
-	if statusFilter != "" {
-		query = query.Where("status = ?", statusFilter)
-	}
-	if startDate != nil {
-		query = query.Where("formed_at >= ?", startDate)
-	}
-	if endDate != nil {
-		query = query.Where("formed_at <= ?", endDate)
-	}
-	err := query.Order("formed_at DESC").Find(&pits).Error
-	return pits, err
+    if statusFilter != "" {
+        query = query.Where("status = ?", statusFilter)
+    }
+    if startDate != nil {
+        query = query.Where("formed_at >= ?", startDate)
+    }
+    if endDate != nil {
+        query = query.Where("formed_at <= ?", endDate)
+    }
+    err := query.Order("formed_at DESC").Find(&pits).Error
+    if err != nil {
+        return nil, err
+    }
+    result := make([]model.PitsCalculationListItem, 0, len(pits))
+    for _, pit := range pits {
+        calculatedCount, err := r.GetCalculatedMaterialsCount(pit.ID)
+        if err != nil {
+            return nil, err
+        }
+        result = append(result, pit.ToPitsCalculationListItem(calculatedCount))
+    }
+    return result, nil
 }
 
-func (r *PitsPostgres) GetPitWithMaterials(id, creatorId int) (model.PitsCalculation, []model.Material, error) {
-    var pit model.PitsCalculation
-    materials := make([]model.Material, 0)
+func (r *PitsPostgres) GetCalculatedMaterialsCount(pitID int) (int, error) {
+    var count int64
     
+    err := r.db.Model(&model.CalculationMaterial{}).
+        Where("calculation_id = ? AND volume_result IS NOT NULL", pitID).
+        Count(&count).Error
+        
+    return int(count), err
+}
+
+func (r *PitsPostgres) GetPitWithMaterials(id, creatorId int) (model.PitsCalculation, []model.MaterialWithCalculationData, error) {
+    var pit model.PitsCalculation
+    materials := make([]model.MaterialWithCalculationData, 0)
+
     err := r.db.Where("id = ? AND creator_id = ? AND status != 'deleted'", id, creatorId).
         First(&pit).Error
     if err != nil {
         return model.PitsCalculation{}, materials, err
     }
-
-    err = r.db.Joins("JOIN calculation_materials ON calculation_materials.material_id = materials.id").
+    err = r.db.Table("materials").
+        Select(`
+            materials.*, 
+            calculation_materials.slope_angle,
+            calculation_materials.volume_result
+        `).
+        Joins("JOIN calculation_materials ON calculation_materials.material_id = materials.id").
         Where("calculation_materials.calculation_id = ?", pit.ID).
         Find(&materials).Error
     if err != nil {

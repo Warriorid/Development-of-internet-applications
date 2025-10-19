@@ -27,8 +27,8 @@ type Material interface{
 }
 type Pits interface{
    GetDraftPitWithItemsCount(creatorID int) (int, int, error)
-   GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error)
-   GetPitWithMaterials(id, creatorId int) (model.PitsCalculation, []model.Material, error)
+   GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculationListItem, error)
+   GetPitWithMaterials(id, creatorId int) (model.PitsCalculation, []model.MaterialWithCalculationData, error)
    UpdatePit(id int, input model.UpdatePitParam) error
    FormPit(id int) error
    ValidatePitForForming(id, creatorId int) error

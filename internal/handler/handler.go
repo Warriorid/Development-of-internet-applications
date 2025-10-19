@@ -2,7 +2,6 @@ package handler
 
 import (
 	"DIA/internal/service"
-
 	"github.com/gin-gonic/gin"
 )
 

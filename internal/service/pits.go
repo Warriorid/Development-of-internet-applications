@@ -22,20 +22,20 @@ func (s *PitsService) GetDraftPitWithItemsCount(creatorID int) (int, int, error)
     return s.repo.GetDraftPitWithItemsCount(creatorID)
 }
 
-func (s *PitsService) GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculation, error) {
+func (s *PitsService) GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculationListItem, error) {
 	return s.repo.GetPits(statusFilter, startDate, endDate)
 }
 
-func (s *PitsService) GetPitWithMaterials(id, creatorId int) (model.PitsCalculationWithMaterial, error) {
-	pit, materials, err := s.repo.GetPitWithMaterials(id, creatorId)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return model.PitsCalculationWithMaterial{}, fmt.Errorf("not found")
-		}
-		return model.PitsCalculationWithMaterial{}, err
-	}
+func (s *PitsService) GetPitWithMaterials(id, creatorId int) (model.PitsCalculationWithMaterials, error) {
+    pit, materials, err := s.repo.GetPitWithMaterials(id, creatorId)
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return model.PitsCalculationWithMaterials{}, fmt.Errorf("not found")
+        }
+        return model.PitsCalculationWithMaterials{}, err
+    }
 
-	return pit.ToPitsCalculationWithMaterial(materials), nil
+    return pit.ToPitsCalculationWithMaterials(materials), nil
 }
 
 func (s *PitsService) UpdatePit(id int, input model.UpdatePitParam) error {

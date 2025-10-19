@@ -1,0 +1,22 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API для расчета земляных работ при разработке котлована",
+        "title": "DIA API",
+        "contact": {
+            "name": "API Support",
+            "url": "https://example.com",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {}
+}
