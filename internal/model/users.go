@@ -32,6 +32,9 @@ type LoginResp struct {
 	ExpiresIn   int    `json:"expires_in"`
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
+	UserID      int       `json:"user_id"`
+    Username    string    `json:"username"`
+    Role        int       `json:"role"`
 }
 
 type UpdateProfileRequest struct {

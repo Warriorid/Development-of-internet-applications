@@ -37,7 +37,10 @@ func (s *UserService) Login(username, password string) (*model.LoginResp, error)
 	loginResp := &model.LoginResp{
 		AccessToken: token,
 		TokenType:   "Bearer",
-		ExpiresIn:   24 * 60 * 60, 
+		ExpiresIn:   24 * 60 * 60,
+		UserID:      user.ID,
+		Username:    user.Username,
+		Role:        int(user.Role),
 	}
 	
 	return loginResp, nil

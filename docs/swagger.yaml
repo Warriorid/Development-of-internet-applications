@@ -21,7 +21,13 @@ definitions:
         type: string
       expires_in:
         type: integer
+      role:
+        type: integer
       token_type:
+        type: string
+      user_id:
+        type: integer
+      username:
         type: string
     type: object
   model.Material:
@@ -550,7 +556,8 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Удаление заявки (только для модераторов)
+      description: Удаление заявки (только для черновиков и только владелец заявки
+        или модератор)
       parameters:
       - description: ID заявки
         in: path

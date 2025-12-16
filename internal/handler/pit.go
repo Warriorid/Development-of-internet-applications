@@ -22,20 +22,16 @@ import (
 // @Failure 500 {object} errorResponse
 // @Router /pits/draft [get]
 func (h *Handler) GetDraftPit(c *gin.Context) {
-	role, err := getUserRole(c)
-	if err != nil {
-		newErrorResponse(c, http.StatusUnauthorized, "User not authenticated")
-		return
-	}
-	if role == 2 {
-		c.JSON(http.StatusOK, -1)
-		return
-	}
 	userId, err := getUserID(c)
-	if err != nil {
-		newErrorResponse(c, http.StatusUnauthorized, "User not authenticated")
-		return
-	}
+    if err != nil {
+        c.JSON(http.StatusOK, -1)
+        return
+    }
+    role, roleErr := getUserRole(c)
+    if roleErr != nil || role == 2 {
+        c.JSON(http.StatusOK, -1)
+        return
+    }
 	pitID, itemsCount, err := h.service.GetDraftPitWithItemsCount(userId)
 	if err != nil {
 		if err.Error() == "pit not found" {
@@ -298,7 +294,7 @@ func (h *Handler) CompletePit(c *gin.Context) {
 
 // DeletePit godoc
 // @Summary Удаление заявки
-// @Description Удаление заявки (только для модераторов)
+// @Description Удаление заявки (только для черновиков и только владелец заявки или модератор)
 // @Tags pits
 // @Accept json
 // @Produce json
@@ -311,24 +307,40 @@ func (h *Handler) CompletePit(c *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Router /pits/{id} [delete]
 func (h *Handler) DeletePit(c *gin.Context) {
-	role, err := getUserRole(c)
-	if err != nil || role != 1 {
-		newErrorResponse(c, http.StatusForbidden, "Access denied: moderator role required")
-		return
-	}
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
-		return
-	}
-	if err := h.service.DeletePit(id); err != nil {
-		switch {
-		case err.Error() == "not found":
-			newErrorResponse(c, http.StatusNotFound, "pit not found")
-		default:
-			newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		}
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"status": "deleted"})
+    id, err := strconv.Atoi(c.Param("id"))
+    if err != nil {
+        newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
+        return
+    }
+    
+    userID, err := getUserID(c)
+    if err != nil {
+        newErrorResponse(c, http.StatusUnauthorized, "User not authenticated")
+        return
+    }
+    
+    role, err := getUserRole(c)
+    if err != nil {
+        newErrorResponse(c, http.StatusUnauthorized, "User not authenticated")
+        return
+    }
+
+    canDelete, err := h.service.CanUserDeletePit(id, userID, role)
+    if err != nil || !canDelete {
+        newErrorResponse(c, http.StatusForbidden, "Access denied: you can only delete your own draft pits")
+        return
+    }
+    
+    if err := h.service.DeletePit(id); err != nil {
+        switch {
+        case err.Error() == "pit not found":
+            newErrorResponse(c, http.StatusNotFound, "pit not found")
+        case err.Error() == "only draft pits can be deleted":
+            newErrorResponse(c, http.StatusForbidden, err.Error())
+        default:
+            newErrorResponse(c, http.StatusInternalServerError, err.Error())
+        }
+        return
+    }
+    c.JSON(http.StatusOK, gin.H{"status": "deleted"})
 }

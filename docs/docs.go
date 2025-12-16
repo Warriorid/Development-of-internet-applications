@@ -790,7 +790,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Удаление заявки (только для модераторов)",
+                "description": "Удаление заявки (только для черновиков и только владелец заявки или модератор)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1312,7 +1312,16 @@ const docTemplate = `{
                 "expires_in": {
                     "type": "integer"
                 },
+                "role": {
+                    "type": "integer"
+                },
                 "token_type": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
                     "type": "string"
                 }
             }

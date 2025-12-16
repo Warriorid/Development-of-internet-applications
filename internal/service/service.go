@@ -33,6 +33,7 @@ type Pits interface{
 	CompletePit(id, moderatorID int, status string) error
 	DeletePit(id int) error
 	IsPitOwner(pitID, userID int) (bool, error)
+	CanUserDeletePit(pitID, userID, userRole int) (bool, error)
 }
 
 type CalculationMaterial interface{

@@ -261,27 +261,20 @@ func (r *PitsPostgres) CalculatePitVolume(pitID int, calculateFunc func(length, 
 }
 
 func (r *PitsPostgres) DeletePit(id int) error {
-	var pit model.PitsCalculation
-	err := r.db.Where("id = ? AND status != 'deleted'", id).First(&pit).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return fmt.Errorf("pit not found")
-		}
-		return err
-	}
-	result := r.db.Model(&model.PitsCalculation{}).Where("id = ?", id).
-		Updates(map[string]interface{}{
-			"status":    "deleted",
-			"formed_at": time.Now(),
-			"completed_at": time.Now(),
-		})
-	if result.Error != nil {
-		return result.Error
-	}
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("pit cannot be deleted")
-	}
-	return nil
+    result := r.db.Model(&model.PitsCalculation{}).Where("id = ?", id).
+        Updates(map[string]interface{}{
+            "status":       "deleted",
+        })
+    
+    if result.Error != nil {
+        return result.Error
+    }
+    
+    if result.RowsAffected == 0 {
+        return fmt.Errorf("pit not found or already deleted")
+    }
+    
+    return nil
 }
 
 func (r *PitsPostgres) GetPitByID(id int) (*model.PitsCalculation, error) {

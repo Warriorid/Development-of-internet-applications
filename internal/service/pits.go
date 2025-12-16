@@ -90,15 +90,36 @@ func (s *PitsService) calculateExcavationVolume(length, width, depth, angle, coe
 	return math.Round(totalVolume * 100) / 100, nil
 }
 
+func (s *PitsService) CanUserDeletePit(pitID, userID, userRole int) (bool, error) {
+    pit, err := s.repo.GetPitByID(pitID)
+    if err != nil {
+        return false, err
+    }
+    if userRole == 1 {
+        return pit.Status == "draft", nil
+    }
+    
+    return pit.CreatorID == userID && pit.Status == "draft", nil
+}
+
 func (s *PitsService) DeletePit(id int) error {
-	err := s.repo.DeletePit(id)
-	if err != nil {
-		if err.Error() == "pit not found" {
-			return fmt.Errorf("not found")
-		}
-		return err
-	}
-	return nil
+    pit, err := s.repo.GetPitByID(id)
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return fmt.Errorf("pit not found")
+        }
+        return err
+    }
+    
+    if pit.Status != "draft" {
+        return fmt.Errorf("only draft pits can be deleted")
+    }
+    
+    err = s.repo.DeletePit(id)
+    if err != nil {
+        return err
+    }
+    return nil
 }
 
 func (s *PitsService) IsPitOwner(pitID, userID int) (bool, error) {
