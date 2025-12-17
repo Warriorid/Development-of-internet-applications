@@ -72,6 +72,8 @@ func (p *PitsCalculation) ToPitsCalculationWithMaterials(materials []MaterialWit
     return result
 }
 
+// internal/model/pits_calculations.go
+
 type PitsCalculationListItem struct {
     ID          int        `json:"id"`
     Status      string     `json:"status"`
@@ -84,11 +86,12 @@ type PitsCalculationListItem struct {
     PitLength   *float64 `json:"pit_length"`
     PitWidth    *float64 `json:"pit_width"`
     PitDepth    *float64 `json:"pit_depth"`
+    PitVolume   *float64 `json:"pit_volume"`
 
     CalculatedMaterialsCount int `json:"calculated_materials_count"`
 }
 
-func (p *PitsCalculation) ToPitsCalculationListItem(calculatedCount int) PitsCalculationListItem {
+func (p *PitsCalculation) ToPitsCalculationListItem(calculatedCount int, pitVolume *float64) PitsCalculationListItem {
     result := PitsCalculationListItem{
         ID:          p.ID,
         Status:      p.Status,
@@ -97,6 +100,7 @@ func (p *PitsCalculation) ToPitsCalculationListItem(calculatedCount int) PitsCal
         CompletedAt: p.CompletedAt,
         CreatorID:   p.CreatorID,
         CalculatedMaterialsCount: calculatedCount,
+        PitVolume:   pitVolume,
     }
     
     if p.ModeratorID != nil {
@@ -114,3 +118,21 @@ func (p *PitsCalculation) ToPitsCalculationListItem(calculatedCount int) PitsCal
     
     return result
 }
+
+type AsyncCalculationResult struct {
+    CalculationID int      `json:"calculation_id"`
+    MaterialID    int      `json:"material_id"`
+    VolumeResult  float64  `json:"volume_result"`
+    Token         string   `json:"token"`
+}
+
+type AsyncCalculationRequest struct {
+    CalculationID  int      `json:"calculation_id"`
+    MaterialID     int      `json:"material_id"`
+    PitLength      float64  `json:"pit_length"`
+    PitWidth       float64  `json:"pit_width"`
+    PitDepth       float64  `json:"pit_depth"`
+    SlopeAngle     int      `json:"slope_angle"`
+    Coefficient    float64  `json:"coefficient"`
+}
+

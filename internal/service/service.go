@@ -25,15 +25,17 @@ type Material interface{
 }
 
 type Pits interface{
-	GetDraftPitWithItemsCount(creatorID int) (int, int, error)
-	GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculationListItem, error)
-	GetPitWithMaterials(id, creatorId int) (model.PitsCalculationWithMaterials, error)
-	UpdatePit(id int, input model.UpdatePitParam) error
-	FormPit(id, creatorId int) error
-	CompletePit(id, moderatorID int, status string) error
-	DeletePit(id int) error
-	IsPitOwner(pitID, userID int) (bool, error)
-	CanUserDeletePit(pitID, userID, userRole int) (bool, error)
+    GetDraftPitWithItemsCount(creatorID int) (int, int, error)
+    GetPits(statusFilter string, startDate, endDate *time.Time) ([]model.PitsCalculationListItem, error)
+    GetPitWithMaterials(id, creatorId int) (model.PitsCalculationWithMaterials, error)
+    UpdatePit(id int, input model.UpdatePitParam) error
+    FormPit(id, creatorId int) error
+    CompletePit(id, moderatorID int, status string) error
+    DeletePit(id int) error
+    IsPitOwner(pitID, userID int) (bool, error)
+    CanUserDeletePit(pitID, userID, userRole int) (bool, error)
+    GetPitStatus(pitID int) (string, error)
+    CompleteAsyncCalculation(result model.AsyncCalculationResult) error // ДОБАВЛЯЕМ
 }
 
 type CalculationMaterial interface{

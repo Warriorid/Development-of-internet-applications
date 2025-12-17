@@ -5,6 +5,17 @@ definitions:
       message:
         type: string
     type: object
+  model.AsyncCalculationResult:
+    properties:
+      calculation_id:
+        type: integer
+      material_id:
+        type: integer
+      token:
+        type: string
+      volume_result:
+        type: number
+    type: object
   model.LoginRequest:
     properties:
       password:
@@ -83,6 +94,8 @@ definitions:
       pit_depth:
         type: number
       pit_length:
+        type: number
+      pit_volume:
         type: number
       pit_width:
         type: number
@@ -271,6 +284,38 @@ paths:
       summary: Обновление материала в заявке
       tags:
       - calculation-materials
+  /calculations/complete:
+    post:
+      consumes:
+      - application/json
+      description: Прием результатов расчета от асинхронного сервиса
+      parameters:
+      - description: Результат расчета
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.AsyncCalculationResult'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Завершение асинхронного расчета
+      tags:
+      - async
   /materials:
     get:
       consumes:

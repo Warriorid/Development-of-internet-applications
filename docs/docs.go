@@ -164,6 +164,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/calculations/complete": {
+            "post": {
+                "description": "Прием результатов расчета от асинхронного сервиса",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "async"
+                ],
+                "summary": "Завершение асинхронного расчета",
+                "parameters": [
+                    {
+                        "description": "Результат расчета",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AsyncCalculationResult"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/materials": {
             "get": {
                 "description": "Получение списка всех материалов с возможностью фильтрации по названию",
@@ -1288,6 +1337,23 @@ const docTemplate = `{
                 }
             }
         },
+        "model.AsyncCalculationResult": {
+            "type": "object",
+            "properties": {
+                "calculation_id": {
+                    "type": "integer"
+                },
+                "material_id": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "volume_result": {
+                    "type": "number"
+                }
+            }
+        },
         "model.LoginRequest": {
             "type": "object",
             "required": [
@@ -1406,6 +1472,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "pit_length": {
+                    "type": "number"
+                },
+                "pit_volume": {
                     "type": "number"
                 },
                 "pit_width": {

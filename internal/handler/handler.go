@@ -80,6 +80,10 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 		protectUser.PUT("/:id", h.UpdateUserProfile)
 		protectUser.POST("/logout", h.Logout)
 	}
+	async := api.Group("/calculations")
+    {
+        async.POST("/complete", h.CompleteAsyncCalculation)
+    }
 
 }
 

@@ -32,9 +32,14 @@ type Pits interface{
    UpdatePit(id int, input model.UpdatePitParam) error
    FormPit(id int) error
    ValidatePitForForming(id, creatorId int) error
-   CompletePit(id, moderatorID int, status string, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) error
+   // CompletePit(id, moderatorID int, status string, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) error
    DeletePit(id int) error
    GetPitByID(id int) (*model.PitsCalculation, error)
+   GetPitWithMaterialsForAsync(id int) (*model.PitsCalculation, []model.MaterialWithCalculationData, error)
+   UpdateMaterialVolumeResult(calculationID, materialID int, volumeResult float64) error
+   UpdatePitStatus(id, moderatorID int, status string, completedAt *time.Time) error
+   GetCalculatedMaterialsCount(pitID int) (int, error)
+   GetTotalPitVolume(pitID int) (float64, error)
 }
 type CalculationMaterial interface{
    RemoveMaterialFromPit(calculationID, materialID int) error

@@ -62,9 +62,28 @@ func (r *PitsPostgres) GetPits(statusFilter string, startDate, endDate *time.Tim
         if err != nil {
             return nil, err
         }
-        result = append(result, pit.ToPitsCalculationListItem(calculatedCount))
+
+        var pitVolume *float64 = nil
+        if pit.Status == "completed" {
+            totalVolume, err := r.GetTotalPitVolume(pit.ID)
+            if err == nil && totalVolume > 0 {
+                pitVolume = &totalVolume
+            }
+        }
+        
+        result = append(result, pit.ToPitsCalculationListItem(calculatedCount, pitVolume))
     }
     return result, nil
+}
+
+func (r *PitsPostgres) GetTotalPitVolume(pitID int) (float64, error) {
+    var totalVolume float64
+    err := r.db.Model(&model.CalculationMaterial{}).
+        Where("calculation_id = ? AND volume_result IS NOT NULL", pitID).
+        Select("COALESCE(SUM(volume_result), 0)").
+        Scan(&totalVolume).Error
+        
+    return totalVolume, err
 }
 
 func (r *PitsPostgres) GetCalculatedMaterialsCount(pitID int) (int, error) {
@@ -162,42 +181,6 @@ func (r *PitsPostgres) ValidatePitForForming(id, creatorId int) error {
 	return nil
 }
 
-
-func (r *PitsPostgres) CompletePit(id, moderatorID int, status string, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) error {
-	var pit model.PitsCalculation
-	err := r.db.Where("id = ? AND status = 'formed'", id).First(&pit).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return fmt.Errorf("pit not found")
-		}
-		return err
-	}
-	
-	if status == "completed" {
-		_, err = r.CalculatePitVolume(id, calculateFunc) 
-		if err != nil {
-			return err
-		}
-	}
-
-	result := r.db.Model(&model.PitsCalculation{}).Where("id = ? AND status = 'formed'", id).
-		Updates(map[string]interface{}{
-			"status":       status,
-			"moderator_id": moderatorID,
-			"completed_at": time.Now(),
-		})
-	
-	if result.Error != nil {
-		return result.Error
-	}
-	
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("pit cannot be %s", status)
-	}
-	
-	return nil
-}
-
 func (r *PitsPostgres) CalculatePitVolume(pitID int, calculateFunc func(length, width, depth, angle, coefficient float64) (float64, error)) (float64, error) {
 	var calculationMaterials []model.CalculationMaterial
 	var totalVolume float64
@@ -284,4 +267,73 @@ func (r *PitsPostgres) GetPitByID(id int) (*model.PitsCalculation, error) {
         return nil, err
     }
     return &pit, nil
+}
+
+
+func (r *PitsPostgres) GetPitWithMaterialsForAsync(id int) (*model.PitsCalculation, []model.MaterialWithCalculationData, error) {
+    var pit model.PitsCalculation
+    err := r.db.Where("id = ? AND status = 'formed'", id).First(&pit).Error
+    if err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return nil, nil, fmt.Errorf("pit not found")
+        }
+        return nil, nil, err
+    }
+    
+    if pit.PitLength == nil || pit.PitWidth == nil || pit.PitDepth == nil {
+        return nil, nil, fmt.Errorf("pit dimensions not set")
+    }
+    
+    materials := make([]model.MaterialWithCalculationData, 0)
+    err = r.db.Table("materials").
+        Select(`
+            materials.id,
+            materials.title,
+            materials.description,
+            materials.coefficient,
+            materials.image_url,
+            calculation_materials.slope_angle,
+            calculation_materials.volume_result
+        `).
+        Joins("JOIN calculation_materials ON calculation_materials.material_id = materials.id").
+        Where("calculation_materials.calculation_id = ?", pit.ID).
+        Find(&materials).Error
+    if err != nil {
+        return nil, nil, err
+    }
+    
+    if len(materials) == 0 {
+        return nil, nil, fmt.Errorf("no materials found for calculation")
+    }
+    
+    return &pit, materials, nil
+}
+
+func (r *PitsPostgres) UpdateMaterialVolumeResult(calculationID, materialID int, volumeResult float64) error {
+    return r.db.Model(&model.CalculationMaterial{}).
+        Where("calculation_id = ? AND material_id = ?", calculationID, materialID).
+        Update("volume_result", volumeResult).Error
+}
+
+func (r *PitsPostgres) UpdatePitStatus(id, moderatorID int, status string, completedAt *time.Time) error {
+    updates := map[string]interface{}{
+        "status": status,
+        "moderator_id": moderatorID,
+    }
+    
+    if completedAt != nil {
+        updates["completed_at"] = completedAt
+    }
+    
+    result := r.db.Model(&model.PitsCalculation{}).Where("id = ?", id).Updates(updates)
+    
+    if result.Error != nil {
+        return result.Error
+    }
+    
+    if result.RowsAffected == 0 {
+        return fmt.Errorf("pit not found")
+    }
+    
+    return nil
 }
